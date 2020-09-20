@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.ViewDao">
+    <resultMap id="viewResultMap" type="View">
+        <id column="vid" property="vid"/>
+        <result column="vname" property="vname"/>
+        <result column="picture" property="picture"/>
+        <result column="hottime" property="hottime"/>
+        <result column="hotprice" property="hotprice"/>
+        <result column="normalprice" property="normalprice"/>
+        <result column="synopsis" property="synopsis"/>
+        <association property="province" javaType="Province">
+            <id column="pid" property="pid"/>
+            <result column="pname" property="pname"/>
+            <result column="ptag" property="ptag"/>
+            <result column="count" property="count"/>
+        </association>
+    </resultMap>
+
+    <sql id="select_view_sql">
+        select vid,vname,picture,hottime,hotprice,normalprice,synopsis,pid from ly_view
+    </sql>
+    <select id="queryPage" resultMap="viewResultMap">
+        <include refid="select_view_sql"/>
+        where pid=#{pid} limit #{lastPage},#{pageSize}
+    </select>
+
+    <select id="count" resultType="Integer">
+        select count(*) from ly_view
+        where pid=#{pid}
+    </select>
+
+    <select id="queryOne" resultMap="viewResultMap">
+        <include refid="select_view_sql"/>
+        where vid=#{vid}
+    </select>
+
+    <insert id="add">
+        insert into ly_view (vname,picture,hottime,hotprice,normalprice,synopsis,pid)
+        values (#{vname},#{picture},#{hottime},#{hotprice},#{normalprice},#{synopsis},#{province.pid})
+    </insert>
+
+    <delete id="delete">
+        delete from ly_view
+        where vid=#{vid}
+    </delete>
+
+    <update id="update">
+        update ly_view
+        <set>
+            <if test="vname!=null">vname=#{vname},</if>
+            <if test="picture!=null">picture=#{picture},</if>
+            <if test="hottime!=null">hottime=#{hottime},</if>
+            <if test="hotprice!=null">hotprice=#{hotprice},</if>
+            <if test="normalprice!=null">normalprice=#{normalprice},</if>
+            <if test="synopsis!=null">synopsis=#{synopsis},</if>
+            <if test="province.pid!=null">pid=#{province.pid}</if>
+        </set>
+        where vid=#{vid}
+    </update>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.ProvinceDao">
+    <sql id="select_province_sql">
+        select pid,pname,ptag,count from ly_province
+    </sql>
+    
+    
+    <select id="queryPage" resultType="Province">
+        <include refid="select_province_sql"/>
+        limit #{lastPage} ,#{pageSize}
+    </select>
+
+    <select id="count" resultType="Integer">
+        select count(*) from ly_province
+    </select>
+
+
+    <insert id="add">
+        insert into ly_province (pname,ptag,count) values (#{pname},#{ptag},#{count})
+    </insert>
+
+    <delete id="delete">
+        delete from ly_province
+        where pid=#{pid}
+    </delete>
+
+    <update id="update">
+        update ly_province
+        <set>
+            <if test="pname!=null">pname=#{pname},</if>
+            <if test="ptag!=null">ptag=#{ptag},</if>
+            <if test="count!=null">count=#{count}</if>
+        </set>
+        where pid=#{pid}
+    </update>
+
+    <select id="queryOne" resultType="Province">
+        <include refid="select_province_sql"/>
+        where pid=#{pid}
+    </select>
+
+    <select id="queryAll" resultType="Province">
+        <include refid="select_province_sql"/>
+    </select>
+
+</mapper>
